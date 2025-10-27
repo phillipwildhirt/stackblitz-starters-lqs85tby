@@ -1,0 +1,32 @@
+.container {
+  display        : flex;
+  flex-direction : column;
+}
+
+.remove-x-easy-animation {
+  animation-iteration-count : 1;
+  animation-play-state      : running;
+  animation-direction       : normal;
+  animation-timing-function : ease-in;
+}
+
+.time-300 {
+  animation-duration : 300ms;
+}
+
+.distance-n100 {
+  animation-name : remove-x-easy-animation-n100-keyframes;
+
+  @keyframes remove-x-easy-animation-n100-keyframes {
+    from {transform : translateX(0);}
+    to {transform : translateX(calc(-100 * 1%));}
+  }
+}
+
+.instant-animation {
+  animation-duration : 1ms !important;
+}
+
+.min-height-animate {
+  transition: min-height 300ms;
+}

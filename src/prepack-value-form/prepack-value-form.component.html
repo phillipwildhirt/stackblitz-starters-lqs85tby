@@ -1,0 +1,41 @@
+<div class="flex-center" style="    min-width: 4.25rem; height:3rem;" [ngClass]="{'prepack-units' : !isSkeleton}">
+  <div id="container" class="position-relative" [style.width]="'calc(max(' + (size.length + 1) + 'ch, 4ch) + ' + (arrows) + 'rem)'">
+    @if (isSkeleton) {
+      <div style="width:36px; height:36px;" ></div>
+    } @else {
+      <input class="form-control text-center"
+             #sizeUnitsInputRef
+             [id]="'PrepackValue-'+tabIndex"
+             [ngClass]="{'filled' : !!(control.valueChanges | async) || (control.value !== null && control.value > 0) || control.defaultValue !== control.value,
+                         'is-invalid' : control.dirty && !control.valid}"
+             [formControl]="control"
+             [class]="activeButtonStateClass"
+             min="0"
+             max="999"
+             step="1"
+             type="number"
+             [maxlength]="3"
+             pattern="/^(0|[0-9]|[1-9][0-9]|[1-9][0-9][0-9])$/"
+             (focusin)="sizeUnitsInputRef.select()"
+             (keydown)="preventKeydown($event)"
+             (keyup)="checkSizeUnitsKeyup(sizeUnitsInputRef)"
+             (keydown.enter)="onKeyDownEnter(sizeUnitsInputRef)"
+             (keyup.tab)="onKeyUpTab(sizeUnitsInputRef)"
+             (keyup.backspace)="control.value === 0 ? control.setValue(null) : undefined"
+             [placeholder]="size"
+             [style.padding-left]="0"
+             [style.padding-right]="0"
+             [style.width]="'max(' + (size.length + 1) + 'ch, 4ch)'"
+             [tabindex]="tabIndex"
+             oninput="value = Number(value.toString().slice(0, 3))"/>
+    }
+    @if (isSkeleton || !control.disabled) {
+      <button class="inc position-absolute z-1 top-0 end-0 btn btn-outline-dpsblue-light border-0" (dpsComponentState)="onComponentState($event)" [tabindex]="-1">
+        <div class="icon-3">^</div>
+      </button>
+      <button class="dec position-absolute bottom-0 end-0 btn btn-outline-dpsblue-light border-0" (dpsComponentState)="onComponentState($event)" [tabIndex]="-1">
+        <div class="icon-3">^</div>
+      </button>
+    }
+  </div>
+</div>
