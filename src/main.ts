@@ -11,14 +11,15 @@ type Item = {text: string, type: 0 | 1 | 2, controls: FormControl<number | null>
 @Component({
   selector: 'app-root',
   template: `
-    <div style="padding-bottom: 1rem">
-      <button (click)="toggle()">
+    <div style="padding-bottom: 1rem; display: flex;">
+      <button (click)="toggle()" style="margin-right:1rem;">
         @if (filter < 2) {
           Filter Data to type {{ filter }}
         } @else {
           Do Not Filter
         }
       </button>
+      <button (click)="newItem()">Create New Item</button>
     </div>
     <div class="container">
       @for (item of filtered; track trackItemValues(item)) {
@@ -50,11 +51,12 @@ type Item = {text: string, type: 0 | 1 | 2, controls: FormControl<number | null>
 export class App implements OnDestroy {
   name = 'Angular';
   unsub$ = new Subject<void>();
+  createControls = () => [...Array.from(Array(10)).map(() => new FormControl<number | null>(null))];
   data: Item[] = [
     ...Array.from(Array(200)).map((v, index) => ({
       text: (Math.ceil(Math.random() * 2) === 1 ? 'this ' : 'that ') + index,
       type: (index % 2) as 0 | 1 | 2,
-      controls: [...Array.from(Array(10)).map(() => new FormControl<number | null>(null))],
+      controls: this.createControls(),
       scroll$: new Subject<string>()
     }))
   ];
@@ -83,10 +85,18 @@ export class App implements OnDestroy {
     of(void 0).pipe(delay(0)).subscribe(() => this.filtered = this.filter < 2 ? this.data.filter((item) => item.type === this.filter) : [...this.data]);
   }
 
+  newItem() {
+    const newItem: Item = {text: 'unknown', type: 0, controls: this.createControls(), scroll$: new Subject<string>()};
+    this.filtered.unshift(newItem);
+    of(void 0).pipe(delay(2000)).subscribe(() => newItem.text = 'the one 1');
+  }
+
   trackItemValues(item: Item): string {
-    return `text:${item.text},
-        type:${item.type}
-        value: ${item.controls.map(c => c.value).join()}`;
+    return `
+      text:${item.text},
+      type:${item.type}
+      value: ${item.controls.map(c => c.value).join()}
+      `;
   }
 
   protected readonly AnimationUtilities = AnimationUtilities;
